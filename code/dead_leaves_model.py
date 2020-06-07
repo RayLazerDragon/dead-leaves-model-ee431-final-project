@@ -21,9 +21,9 @@ def compute_dead_leaves_model(img_size=500, sigma=3, shape='disk', num_iter=5000
     csum = np.cumsum(rad_dist)
     rad_dist = (csum - np.min(csum)) / (np.max(csum) - np.min(csum))  # map the radius distance to 0~1
 
-    ref_img = cv2.imread('../dataset/space1.jpg')  # choose your reference image to color
+    ref_img = cv2.imread('../dataset/castle.jpg')  # choose your reference image to color
     ref_img = cv2.cvtColor(ref_img, cv2.COLOR_BGR2RGB)
-    model, _ = segmentation(ref_img, n_color=n_color, filename='space1')
+    model, _, distribution = segmentation(ref_img, n_color=n_color, filename='castle1')
 
     for _ in range(num_iter):
         r = np.random.rand(1)
@@ -32,7 +32,7 @@ def compute_dead_leaves_model(img_size=500, sigma=3, shape='disk', num_iter=5000
         r = rad_list[min_index]
         x = np.random.rand(1)
         y = np.random.rand(1)
-        a = np.random.randint(0, n_color)
+        a = int(np.random.choice(n_color, 1, p=distribution))  # maintain the color distribution
 
         if shape == 'disk':
             table = np.isinf(result) & (((X - x) ** 2 + (Y - y) ** 2) < r ** 2)
@@ -52,15 +52,14 @@ def compute_dead_leaves_model(img_size=500, sigma=3, shape='disk', num_iter=5000
 
 
 if __name__ == '__main__':
-    cluster_index, model = compute_dead_leaves_model(img_size=512, sigma=4, shape='disk', n_color=6)
+    cluster_index, model = compute_dead_leaves_model(img_size=512, sigma=3, shape='disk', n_color=18)
 
     shape = cluster_index.shape
-    cluster_index = np.reshape(cluster_index, shape[0]*shape[1])
+    cluster_index = np.reshape(cluster_index, shape[0] * shape[1])
 
     cluster_centers = np.array(model.cluster_centers_, dtype=np.int)
     result = np.array([cluster_centers[idx] for idx in cluster_index], dtype=np.uint8).reshape((shape[0], shape[1], 3))
 
     plt.imshow(result)
     plt.show()
-    imsave('../results/dead_leaves/generated_space1.png', result)
-
+    imsave('../results/dead_leaves/generated_castle.png', result)
