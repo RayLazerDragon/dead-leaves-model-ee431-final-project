@@ -6,7 +6,7 @@ from sklearn.cluster import KMeans
 from PIL import Image
 
 
-def segmentation(image, n_color=32):
+def segmentation(image, n_color=32, filename='unnamed'):
     model = KMeans(n_clusters=n_color)
     shape = image.shape
 
@@ -15,7 +15,7 @@ def segmentation(image, n_color=32):
     cluster_index = model.fit_predict(image)
     cluster_centers = np.array(model.cluster_centers_, dtype=np.int)
     result = np.array([cluster_centers[idx] for idx in cluster_index], dtype=np.uint8).reshape(shape)
-    imsave('../results/segmented/sea1.png', result)
+    imsave(f'../results/segmented/{filename}.png', result)
     return model, result
 
 
