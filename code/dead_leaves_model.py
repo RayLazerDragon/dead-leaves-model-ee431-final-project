@@ -21,9 +21,10 @@ def compute_dead_leaves_model(img_size=500, sigma=3, shape='disk', num_iter=5000
     csum = np.cumsum(rad_dist)
     rad_dist = (csum - np.min(csum)) / (np.max(csum) - np.min(csum))  # map the radius distance to 0~1
 
-    ref_img = cv2.imread('../dataset/avignon.jpg')  # choose your reference image to color
+    ref_img = cv2.imread('../dataset/soba.jpg')  # choose your reference image to color
     ref_img = cv2.cvtColor(ref_img, cv2.COLOR_BGR2RGB)
-    model, _, distribution = segmentation(ref_img, n_color=n_color, filename='avignon1')
+    ref_img = cv2.resize(ref_img, (512, 512))
+    model, _, distribution = segmentation(ref_img, n_color=n_color, filename='soba')
 
     for _ in range(num_iter):
         r = np.random.rand(1)
@@ -52,7 +53,7 @@ def compute_dead_leaves_model(img_size=500, sigma=3, shape='disk', num_iter=5000
 
 
 if __name__ == '__main__':
-    cluster_index, model = compute_dead_leaves_model(img_size=512, sigma=4, shape='disk', n_color=6)
+    cluster_index, model = compute_dead_leaves_model(img_size=512, sigma=4, shape='square', n_color=12)
 
     shape = cluster_index.shape
     cluster_index = np.reshape(cluster_index, shape[0] * shape[1])
@@ -62,4 +63,4 @@ if __name__ == '__main__':
 
     plt.imshow(result)
     plt.show()
-    imsave('../results/dead_leaves/generated_avignon1.png', result)
+    imsave('../results/dead_leaves/generated_soba.png', result)
