@@ -21,10 +21,10 @@ def compute_dead_leaves_model(img_size=500, sigma=3, shape='disk', num_iter=5000
     csum = np.cumsum(rad_dist)
     rad_dist = (csum - np.min(csum)) / (np.max(csum) - np.min(csum))  # map the radius distance to 0~1
 
-    ref_img = cv2.imread('../dataset/sunrise.jpg')  # choose your reference image to color
+    ref_img = cv2.imread('../dataset/windows.jpg')  # choose your reference image to color
     ref_img = cv2.cvtColor(ref_img, cv2.COLOR_BGR2RGB)
     ref_img = cv2.resize(ref_img, (512, 512))
-    model, _, distribution = segmentation(ref_img, n_color=n_color, filename='sunrise')
+    model, _, distribution = segmentation(ref_img, n_color=n_color, filename='windows')
 
     for _ in range(num_iter):
         r = np.random.rand(1)
@@ -68,4 +68,4 @@ if __name__ == '__main__':
 
     plt.imshow(result)
     plt.show()
-    imsave('../results/dead_leaves/generated_sunrise.png', result)
+    imsave('../results/dead_leaves/generated_windows.png', result)
